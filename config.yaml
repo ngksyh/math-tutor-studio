@@ -1,0 +1,112 @@
+# Math Tutor Studio — user-adjustable defaults.
+# Values changed in the Settings page are stored in the database and override these.
+
+app:
+  name: Math Tutor Studio
+  database_path: data/tutoring.db
+  env_path: .env            # where the OpenAI API key is stored locally
+
+ai:
+  default_mode: chatgpt_manual  # chatgpt_manual (no API cost) or api (billed per use; provider chosen in Settings)
+  default_model: gpt-4.1-mini   # OpenAI model in API mode (other providers: choose in Settings)
+  questions_per_batch: 5
+  # Sent with every request (editable in Settings). Not part of the saved ChatGPT rules,
+  # so changes take effect immediately.
+  question_preferences: |
+    - Analysis and proof-based calculus (e.g. epsilon-delta, Mean Value Theorem, MAT137-style topics): prefer stronger, proof-based problems (difficulty 3-5) that require a genuine argument, not routine computation.
+    - Linear algebra: the usual range (difficulty 2-4) is fine.
+
+research:
+  source_types:
+    - university_course_page
+    - syllabus
+    - course_notes
+    - textbook_contents
+    - calendar_description
+    - university_practice_material
+    - stackexchange
+    - search_trend
+    - social_media
+    - other
+
+stackexchange:
+  site: math
+  results_per_topic: 5         # most-voted of the 30 most relevant matches are kept
+  lookback_years: 8            # ignore posts older than this
+  min_score: 1                 # ignore posts with zero or negative votes
+  excerpt_chars: 400           # keep excerpts short (CC BY-SA content; link + author are stored)
+  request_delay_seconds: 0.5   # be polite to the API (300 requests/day without a key)
+  # Topic subject -> one Math Stack Exchange tag used as a filter. (The API requires ALL listed
+  # tags, so a single broad tag works best.) Subjects not listed are searched without a filter.
+  subject_tags:
+    Calculus: calculus
+    Linear Algebra: linear-algebra
+    Differential Equations: ordinary-differential-equations
+    Probability: probability
+    Statistics: statistics
+    Proof Writing: proof-writing
+    Real Analysis: real-analysis
+    Complex Analysis: complex-analysis
+    Abstract Algebra: abstract-algebra
+    Topology: general-topology
+    Partial Differential Equations: partial-differential-equations
+    Differential Geometry: differential-geometry
+    Differential Topology: differential-topology
+    Numerical Analysis: numerical-methods
+    Discrete Mathematics: discrete-mathematics
+    GRE Mathematics: gre-exam
+
+ranking:
+  version: v1
+  # S = 100 * (wR*R + wD*D + wT*T + wQ*Q + wN*N). Initial assumptions — tune after real data.
+  weights:
+    course_relevance: 0.30
+    observed_difficulty: 0.25
+    timeliness: 0.20
+    content_quality_potential: 0.15
+    novelty: 0.10
+  # Used when a topic has no linked sources: neutral, not zero (missing evidence != no interest).
+  missing_evidence_prior: 0.3
+  # Content-quality prior by target level, following the planned 60/20/20 content mix.
+  level_quality:
+    university_intro: 0.9
+    intro_proofs: 0.8
+    advanced_undergrad: 0.6
+    gre_math_subject: 0.7
+  novelty_days: 60             # a topic used this many days ago counts as fully fresh again
+
+# Your public tutor profile. Drafts may only mention what is written here.
+# These are placeholders: enter your real profile in Settings → Tutor profile (stored in your local
+# database, which is never committed).
+profile:
+  credentials: |
+    - (Your degree, institution and distinctions)
+    - (Relevant test scores, research or teaching experience)
+  services: |
+    - Online one-on-one university mathematics tutoring
+    - (Subjects, formats and languages you offer)
+  teaching_style: Intuition, clear reasoning and independent problem-solving rather than memorisation.
+  contact: Send me a DM to book a session.
+
+publishing:
+  default_platforms: [xiaohongshu, instagram]
+  # Suggested hashtags (the drafts pick what fits; you can edit every post).
+  base_hashtags:
+    xiaohongshu: [加拿大留学, 大学数学, 多伦多大学, UBC, 数学辅导]
+    instagram: [universitymath, mathtutor, uoft, ubc, studytips]
+  limits:                       # checked automatically; shown as warnings
+    xiaohongshu: {title_chars: 20, caption_chars: 1000, hashtags_max: 10}
+    instagram: {caption_chars: 2200, hashtags_max: 30}
+    facebook: {caption_chars: 2000, hashtags_max: 3}
+
+# Slide images (Publishing Studio → Render slides). Editable in Settings.
+slides:
+  browser_channel: msedge       # uses Microsoft Edge already installed on Windows (no download)
+  sizes:                        # width x height in pixels
+    xiaohongshu: [1080, 1440]   # 3:4
+    instagram: [1080, 1350]     # 4:5
+  theme:
+    handle: ""                  # e.g. your account name; shown small at the bottom (empty = hidden)
+    background: "#FAF8F3"       # warm off-white
+    text: "#1F2933"
+    accent: "#2B5797"           # headings, rules, page numbers
